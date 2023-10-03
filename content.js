@@ -466,16 +466,34 @@ function addReactionButtonToChatMessages() {
     divChatMsg.forEach((message, index) => {
         const btnReactExtension = document.createElement('button');
         btnReactExtension.classList.add('btn', 'btn-custom', 'btn-success', 'mtien')
-        btnReactExtension.setAttribute('data-popover', `nytun-${index}`)
+        btnReactExtension.setAttribute('data-popover', `ny-${index}`)
         btnReactExtension.setAttribute('id', `thichngamtrang-${index}`)
-        btnReactExtension.setAttribute('data-toggle', "popover1")
+        btnReactExtension.setAttribute('data-toggle', "popover-mtien")
 
         btnReactExtension.innerHTML = HTML_BTN_REACTION;
         message.appendChild(btnReactExtension);
 
     });
 
-    const btnHavePopover = document.querySelectorAll('.mtien');
+    // const btnHavePopover = document.querySelectorAll('.mtien');
+    $('.mtien').popover({
+        content: fullEmojiElement,
+        html: true,
+        container: 'body',
+        trigger: 'focus',
+    }).on('shown.bs.popover', function () {
+        const childEl = document.querySelectorAll('.mtien-ext')
+        childEl.forEach(item =>{
+            item.addEventListener('click',()=>{
+                alert('122xxx')
+            })
+        })
+
+    });
+    // $('.mtien').on('shown.bs.popover', function () {
+    //     const childEl = document.querySelectorAll('.b-child')
+    //
+    // });
 
     const popoverList = [...btnHavePopover].map(popoverTriggerEl => {
         new bootstrap.Popover(popoverTriggerEl, {
@@ -487,8 +505,8 @@ function addReactionButtonToChatMessages() {
 
     })
 
-
-
 }
 
-window.addEventListener('load', addReactionButtonToChatMessages);
+window.addEventListener('load', () => {
+    setTimeout(addReactionButtonToChatMessages, 2500)
+});

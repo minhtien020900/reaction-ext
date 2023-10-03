@@ -6,10 +6,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnDiv1 = document.createElement('div')
     const btnDiv2 = document.createElement('div')
 
+    const btnReactExtension = document.createElement('button');
+    btnReactExtension.classList.add('btn', 'btn-custom', 'btn-success', 'today-test')
     const btnPopover = `<button  data-toggle="popover1" class="btn-sm btn-danger today-test" >@btnChildxx</button>`
     const btnPopover1 = `<button  data-toggle="popover1" class="btn-sm btn-danger today-test" >@btnChildxx</button>`
-    const btnPopover2 = `<button  data-toggle="popover1" class="btn-sm btn-warning today-test" >@btnChild1</button>`
+    const btnPopover2 = `<button  data-toggle="popover5" class="btn-sm btn-warning today-test" >@btnChild1</button>`
     const btnPopover3 = `<b  class="btn-sm btn-success b-child" >@child</b>`
+
+    btnReactExtension.innerHTML = `<b  class="btn-sm btn-success b-child" >@child</b>`
 
     btnDiv.innerHTML = btnPopover
     btnDiv1.innerHTML = btnPopover1
@@ -17,18 +21,19 @@ document.addEventListener("DOMContentLoaded", function () {
     popoverContainer.appendChild(btnDiv)
     popoverContainer.appendChild(btnDiv1)
     popoverContainer.appendChild(btnDiv2)
+    popoverContainer.appendChild(btnReactExtension)
 
     // const popoverTrigger = popoverContainer.querySelectorAll("[data-toggle='popover1']");
     const popoverTrigger = popoverContainer.querySelectorAll(".today-test");
 
-   [...popoverTrigger].map(popoverTriggerEl => {
-        new bootstrap.Popover(popoverTriggerEl, {
-            content: btnPopover3,
-            container: 'body',
-            html: true
-        })
-
-    })
+   // [...popoverTrigger].map(popoverTriggerEl => {
+   //      new bootstrap.Popover(popoverTriggerEl, {
+   //          content: btnPopover3,
+   //          container: 'body',
+   //          html: true
+   //      })
+   //
+   //  })
 
     // const popover = new bootstrap.Popover(popoverTrigger,{
     //     content:btnPopover,
@@ -44,6 +49,14 @@ document.addEventListener("DOMContentLoaded", function () {
     // });
 
 });
+$(function () {
+    $('.today-test').popover({
+        content: '123',
+        html: true,
+        container: 'body',
+        // trigger: 'focus',
+    });
+})
 $(function () {
     $('[data-toggle="popover1"]').on('shown.bs.popover', () => {
         // const childEl = document.querySelector('.b-child')
