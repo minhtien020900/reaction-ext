@@ -430,44 +430,32 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         // Sử dụng currentURL ở đây
         console.log(currentURL.split('/'))
         console.log("URL hiện tại là: " + currentURL);
+
+        document.querySelectorAll('.mtien').forEach((item)=>item.remove())
+        $('.mtien').popover('dispose')
+        setTimeout(addReactionButtonToChatMessages, 2500)
     }
 });
 
 
-// content.js
-
-// Hàm xử lý khi class 'reaction-list' xuất hiện
-
-const htmlReaction = `<div><div class="d-flex align-items-center">
-<span id="nav-icon-emoji-add" class="d-inline-flex laka-icon text-dark">
-<svg id="b-icon-emoji-add" viewBox="0 0 16 16" width="1em" height="1em" focusable="false" role="img" aria-label="emoji-add" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="b-icon bi bi-emoji-add"><g transform="scale(1.5 1.5)"><path d="M5 7.19a2.49 2.49 0 0 1-2.15-1.25h-.71a3.12 3.12 0 0 0 5.72 0h-.71A2.49 2.49 0 0 1 5 7.19zM6.41 5a.81.81 0 0 0 .78-.88c0-.51-.42-1.06-.91-1s-.66.49-.66 1a.82.82 0 0 0 .79.88zM3.59 5a.8.8 0 0 0 .78-.87c0-.52-.22-.95-.65-1s-.91.48-.91 1a.81.81 0 0 0 .78.87z"></path><path d="M9 4.37a4.46 4.46 0 0 1 .06.63A4.06 4.06 0 1 1 5 .94a4.21 4.21 0 0 1 .62.06V0H5a5 5 0 1 0 5 5v-.63z"></path><path d="M10 1.11H8.89V0H7.78v1.11H6.67v1.11h1.11v1.11h1.11V2.22H10V1.11z"></path></g></svg></span> <span class="chat-action-item-label button-reaction">Reaction</span></div> <div><ul class="reaction-list"><li title="Roger" class="icon"><img src="/static/emojis/default/emo_roger.gif" class="ui_emoticon">
-</li><li title="Thanks" class="icon"><img src="/static/emojis/default/emo_bow.gif" class="ui_emoticon">
-</li><li title="Congrats" class="icon"><img src="/static/emojis/default/emo_cracker.gif" class="ui_emoticon">
-</li><li title="Yay" class="icon"><img src="/static/emojis/default/emo_dance.gif" class="ui_emoticon"></li>
-<li title="Great" class="icon"><img src="/static/emojis/default/emo_clap.gif" class="ui_emoticon"></li>
-<li title="Like" class="icon"><img src="/static/emojis/default/emo_yes.gif" class="ui_emoticon"></li>
-<li title="Trembling heart" class="icon"><img src="/static/emojis/default/emo_heart.gif" class="ui_emoticon"></li>
-<li title="Haha" class="icon"><img src="/static/emojis/default/emo_more_smile.gif" class="ui_emoticon"></li>
-<li title="Huhu" class="icon"><img src="/static/emojis/default/emo_tears.gif" class="ui_emoticon"></li>
-</ul></div></div>`
-
-
-const btnPopover = `<button data-booked="true" class="btn btn-success" id="today">@SJ</button>`
-
 let emojiItems = ''
 
 EMOJIS.forEach((emoji) => {
-    emojiItems += `<li class="emoji-${emoji.id}" data-emoji="nytun" ><img alt="${emoji.name}" src="${emoji.src}" class="ui_emoticon"></li>`
+    emojiItems += `<li id="emoji-${emoji.id}" data-emoji="nytun" ><img alt="${emoji.name}" src="${emoji.src}" class="ui_emoticon"></li>`
 })
 const fullEmojiElement = `<div class="list-item-emoji mtien-ext"><ul>${emojiItems}</ul></div>`
 
 function addReactionButtonToChatMessages() {
     const divChatMsg = document.querySelectorAll('div[class="chat-element-message"]');
     divChatMsg.forEach((message, index) => {
+
+        let msgId =  message.getAttribute('id').split('-').slice(-1)
+
         const btnReactExtension = document.createElement('button');
         btnReactExtension.classList.add('btn', 'btn-custom', 'btn-success', 'mtien')
         btnReactExtension.setAttribute('data-popover', `ny-${index}`)
-        btnReactExtension.setAttribute('id', `thichngamtrang-${index}`)
+        btnReactExtension.setAttribute('id', `thichngamtrang-${msgId}`)
+        btnReactExtension.setAttribute('data-hash', `hehe${msgId}hehe`)
         btnReactExtension.setAttribute('data-toggle', "popover-mtien")
 
         btnReactExtension.innerHTML = HTML_BTN_REACTION;
@@ -480,33 +468,27 @@ function addReactionButtonToChatMessages() {
         content: fullEmojiElement,
         html: true,
         container: 'body',
+        delay:{hide:200},
+
         trigger: 'focus',
     }).on('shown.bs.popover', function () {
-        const childEl = document.querySelectorAll('.mtien-ext')
+        const detachMsgId =$(this).attr('data-hash').replaceAll('hehe','')
+        const childEl = document.querySelectorAll('div.list-item-emoji.mtien-ext > ul > li')
+        console.log(childEl)
         childEl.forEach(item =>{
             item.addEventListener('click',()=>{
-                alert('122xxx')
+                $.post('https://laka.lampart-vn.com:9443/api/v1/message/set-reaction',{
+                    'room_id': '15566',
+                    'message_id': detachMsgId,
+                    'message_user':439,
+                    'icon_id': item.getAttribute('id').replace('emoji-','')
+                })
             })
         })
 
     });
-    // $('.mtien').on('shown.bs.popover', function () {
-    //     const childEl = document.querySelectorAll('.b-child')
-    //
-    // });
-
-    const popoverList = [...btnHavePopover].map(popoverTriggerEl => {
-        new bootstrap.Popover(popoverTriggerEl, {
-            content: fullEmojiElement,
-            html: true,
-            container: 'body',
-            trigger: 'focus',
-        })
-
-    })
 
 }
-
 window.addEventListener('load', () => {
     setTimeout(addReactionButtonToChatMessages, 2500)
 });

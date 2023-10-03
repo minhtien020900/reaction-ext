@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnPopover3 = `<b  class="btn-sm btn-success b-child" >@child</b>`
 
     btnReactExtension.innerHTML = `<b  class="btn-sm btn-success b-child" >@child</b>`
+    btnReactExtension.innerHTML = `<!--<a tabindex="0" class="btn btn-lg btn-danger" role="button" data-toggle="popover" data-trigger="focus" title="Dismissible popover" data-content="And here's some amazing content. It's very engaging. Right?">Dismissible popover</a>-->`
 
     btnDiv.innerHTML = btnPopover
     btnDiv1.innerHTML = btnPopover1
@@ -54,7 +55,9 @@ $(function () {
         content: '123',
         html: true,
         container: 'body',
-        // trigger: 'focus',
+        tabindex:0,
+        delay:{hide:500},
+        trigger: 'focus',
     });
 })
 $(function () {
