@@ -551,10 +551,9 @@ window.addEventListener('load', () => {
     const observer = new MutationObserver((mutations, observer)=>{
         mutations.forEach(mutation=>{
 
-            if (mutation.type==='childList'){
+            if (mutation.type==='childList'){   
                 const { attributeName, oldValue, target } = mutation;
-                console.log(oldValue)
-                console.log(observer)
+                console.log(mutation.addedNodes,mutation)
                 // addReactionButtonToChatMessages()
             }
         })
