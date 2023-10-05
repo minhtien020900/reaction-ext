@@ -445,17 +445,11 @@ EMOJIS.forEach((emoji) => {
 })
 const fullEmojiElement = `<div class="list-item-emoji mtien-ext"><ul>${emojiItems}</ul></div>`
 
-const token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxMSIsImp0aSI6ImI5MzI4ODg0NGI2ZjgyYWFiZWQzNjQ0YWJmZDI1OTU0MmRkN2ZlOGQxNDk4ZWU5MThjMWYzYWMyODAwYjFiZmVlMGJhZDMzODJiMjI4ZDg3IiwiaWF0IjoxNjkyNzE1ODU3LjI4Njk1NywibmJmIjoxNjkyNzE1ODU3LjI4Njk2MSwiZXhwIjoxNzI0MzM4MjU3LjI4Mzc5NSwic3ViIjoiNDM5Iiwic2NvcGVzIjpbXX0.clLsTTQ8OmD9i6IgIopW2pNNIGbRZ_XwwXw7lfv4nPu8IM7CeeBzVMgVsfUjVU7BT7vKJJ91lCbTZ2VVIjRJcZmdFTQB3u3cg5sDurY5kKRPU6N43ObfcUW-M3HUtzVB0NfaHVOkIJ2FsNRD2qPKN1dATv_zWzBgciefzOr4z8gM63HRDI3dxVPpeW0F0agM4jGqznoZ5nAaFwiR0rDYAH_fLImJBKsqm9YMVXxLk9QYLQOr29tL9XxLtW9ytvPfZ1hvfjEuRfbtRXkoeuVdvMTVjN-VTrkQZoV_eD2qvnQcL_LVR00RLP5NJe13p0uJ_ynUPXwDu4JPQSED-RIQUM6ThURoV2jOj7Rt6FUHu5y03SHEMMvaq6V_o02ck-aiiebbJ8D4hEq4uFKHpv0VGHl-AIjCthR6W0BM9Cww5zxpo3xZtB0RNKCIk1VLxnzYF6UwlpfCWsVUe6YYMD5QEL_8pILkpfIprbBcQIoJmqq7-UzVxWEZLZUMczh2JG-Fg2c6LSpQ-PbN2PETrREtTd4gdwGKM2mzFD8odWCrEc02BG-L6CjQbiDQCBabeDg6ye8LM8Wn0HFkpvMRh6z9mRljRJd8rZBEzOvv-B5a24VnYP9OUKXfPoOkOUoDim0m5gAzCbiQWdVtJ_GfT_04jhyFXEicGy0vHCfrmIKTQqQ"
-
-$.ajaxSetup({
-    beforeSend: function(xhr) {
-        xhr.setRequestHeader('Authorization', token);
-    }
-});
 function addReactionButtonToChatMessages() {
     const divChatMsg = document.querySelectorAll('div[class="chat-element-message"]');
     divChatMsg.forEach((message, index) => {
-
+        const userElement = message.querySelector('.msg-main-content')
+        let userMsg =userElement.getAttribute('data-uid')
         let msgId =  message.getAttribute('id').split('-').slice(-1)
 
         const btnReactExtension = document.createElement('button');
@@ -464,6 +458,7 @@ function addReactionButtonToChatMessages() {
         btnReactExtension.setAttribute('id', `thichngamtrang-${msgId}`)
         btnReactExtension.setAttribute('data-hash', `hehe${msgId}hehe`)
         btnReactExtension.setAttribute('data-toggle', "popover-mtien")
+        btnReactExtension.setAttribute('uid', userMsg)
 
         btnReactExtension.innerHTML = HTML_BTN_REACTION;
         message.appendChild(btnReactExtension);
@@ -484,17 +479,37 @@ function addReactionButtonToChatMessages() {
         const splitBaseUri = $(this)[0].baseURI.split('/').slice(-1)
 
         const roomId = splitBaseUri[0].split('-').slice(-1)
-        console.log(roomId)
+
         const detachMsgId =$(this).attr('data-hash').replaceAll('hehe','')
         const childEl = document.querySelectorAll('div.list-item-emoji.mtien-ext > ul > li')
         childEl.forEach(item =>{
             item.addEventListener('click',()=>{
-                $.post('https://laka.lampart-vn.com:9443/api/v1/message/set-reaction',{
-                    'room_id': roomId[0],
-                    'message_id': detachMsgId,
-                    'message_user':439,
-                    'icon_id': item.getAttribute('id').replace('emoji-','')
-                })
+
+
+                const user = JSON.parse(localStorage.getItem('user'))
+                console.log(user)
+                if (user.token){
+                    console.log('123')
+                    $.ajax({
+                        type: 'POST',
+                        url: 'https://laka.lampart-vn.com:9443/api/v1/message/set-reaction',
+                        data: {
+                            'room_id': roomId[0],
+                            'message_id': detachMsgId,
+                            'message_user':$(this).attr('uid'),
+                            'icon_id': item.getAttribute('id').replace('emoji-','')
+                        },
+                        headers: { "Authorization": `Bearer ${user.token}`,
+                            'Access-Control-Allow-Origin': '*',
+                            'Access-Control-Allow-Headers': 'Origin,X-Requested-With',
+                            'Accept': 'application/json',
+                            'Access-Control-Allow-Methods': 'POST',
+                            'Access-Control-Allow-Credentials': 'true'
+                        },
+
+                    });
+                }
+
             })
         })
 
