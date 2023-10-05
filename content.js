@@ -413,10 +413,34 @@ const EMOJIS = [
         altCode: '(y)',
         showInList: true,
     },
+
     {
         id: 49,
-        name: 'Thumbs up',
-        src: '/static/emojis/default/rolling-on-the-floor-laughing.gif',
+        name: 'Angry',
+        src: '/static/emojis/default/emo_angry.gif',
+        code: '(ag)',
+        sequence: 7,
+        showInList: true,
+
+    },
+    {
+        id: 50,
+        name: 'huhu',
+        src: '/static/emojis/default/emo_huhu.gif',
+        code: '=))',
+        altCode: '=))',
+        showInList: true,
+    }, {
+        id: 51,
+        name: 'Haha',
+        src: '/static/emojis/default/emo_haha.gif',
+        code: '=))',
+        altCode: '=))',
+        showInList: false,
+    },{
+        id: 52,
+        name: 'Hihi',
+        src: '/static/emojis/default/emo_hihi.gif',
         code: '=))',
         altCode: '=))',
         showInList: false,
@@ -440,13 +464,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 let emojiItems = ''
 
 EMOJIS.forEach((emoji) => {
-    emojiItems += `<li id="emoji-${emoji.id}" data-emoji="nytun" ><img alt="${emoji.name}" src="${emoji.src}" class="ui_emoticon"></li>`
+    if (emoji.showInList){
+        emojiItems += `<li id="emoji-${emoji.id}" ><img alt="${emoji.name}" src="${emoji.src}" class="ui_emoticon"></li>`
+
+    }
 })
 const fullEmojiElement = `<div class="list-item-emoji mtien-ext"><ul>${emojiItems}</ul></div>`
 
 function addReactionButtonToChatMessages() {
     const divMsgItemMention = document.querySelectorAll(".chat-element-message>.message-item");
     divMsgItemMention.forEach((message, index) => {
+        console.log('123')
         const divMsgContent = message.querySelector('.msg-main-content')
 
         let userMsg = divMsgContent.getAttribute('data-uid')
@@ -477,10 +505,7 @@ function addReactionButtonToChatMessages() {
 
         trigger: 'focus',
     }).on('shown.bs.popover', function () {
-
-
         const splitBaseUri = $(this)[0].baseURI.split('/').slice(-1)
-
         const roomId = splitBaseUri[0].split('-').slice(-1)
 
         const detachMsgId = $(this).attr('data-hash').replaceAll('hehe', '')
@@ -520,5 +545,26 @@ function addReactionButtonToChatMessages() {
 }
 
 window.addEventListener('load', () => {
-    setTimeout(addReactionButtonToChatMessages, 2500)
+
+    const msgListEle = document.getElementById('message-list')
+
+    const observer = new MutationObserver((mutations, observer)=>{
+        mutations.forEach(mutation=>{
+
+            if (mutation.type==='childList'){
+                const { attributeName, oldValue, target } = mutation;
+                console.log(oldValue)
+                console.log(observer)
+                // addReactionButtonToChatMessages()
+            }
+        })
+    })
+    observer.observe(msgListEle, {
+        // attributeFilter: ["title"],
+        // attributeOldValue: true,
+        // characterDataOldValue: true,
+        childList: true,
+        // subtree: true,
+    });
+    // setTimeout(addReactionButtonToChatMessages, 2500)
 });
