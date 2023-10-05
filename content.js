@@ -424,14 +424,13 @@ const EMOJIS = [
 ]
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log(message)
     if (message.url) {
-        const currentURL = message.url;
+        // const currentURL = message.url;
         // Sử dụng currentURL ở đây
-        console.log(currentURL.split('/'))
-        console.log("URL hiện tại là: " + currentURL);
+        // console.log(currentURL.split('/'))
+        // console.log("URL hiện tại là: " + currentURL);
 
-        document.querySelectorAll('.mtien').forEach((item)=>item.remove())
+        document.querySelectorAll('.mtien').forEach((item) => item.remove())
         $('.mtien').popover('dispose')
         setTimeout(addReactionButtonToChatMessages, 2500)
     }
@@ -446,15 +445,18 @@ EMOJIS.forEach((emoji) => {
 const fullEmojiElement = `<div class="list-item-emoji mtien-ext"><ul>${emojiItems}</ul></div>`
 
 function addReactionButtonToChatMessages() {
-    const divChatMsg = document.querySelectorAll('div[class="chat-element-message"]');
-    divChatMsg.forEach((message, index) => {
-        const userElement = message.querySelector('.msg-main-content')
-        let userMsg =userElement.getAttribute('data-uid')
-        let msgId =  message.getAttribute('id').split('-').slice(-1)
+    const divMsgItemMention = document.querySelectorAll(".chat-element-message>.message-item");
+    divMsgItemMention.forEach((message, index) => {
+        const divMsgContent = message.querySelector('.msg-main-content')
+
+        let userMsg = divMsgContent.getAttribute('data-uid')
+        let msgId = message.getAttribute('id').split('-').slice(-1)
 
         const btnReactExtension = document.createElement('button');
-        btnReactExtension.classList.add('btn', 'btn-custom', 'btn-success', 'mtien')
-        btnReactExtension.setAttribute('data-popover', `ny-${index}`)
+        btnReactExtension.classList.add('btn', 'btn-custom', 'btn-success', 'mtien', 'position-absolute')
+        btnReactExtension.style.bottom = '5px'
+        btnReactExtension.style.right = '5px'
+        btnReactExtension.setAttribute('data-popover', `nyi-${index}`)
         btnReactExtension.setAttribute('id', `thichngamtrang-${msgId}`)
         btnReactExtension.setAttribute('data-hash', `hehe${msgId}hehe`)
         btnReactExtension.setAttribute('data-toggle', "popover-mtien")
@@ -465,12 +467,13 @@ function addReactionButtonToChatMessages() {
 
     });
 
+
     // const btnHavePopover = document.querySelectorAll('.mtien');
     $('.mtien').popover({
         content: fullEmojiElement,
         html: true,
         container: 'body',
-        delay:{hide:200},
+        delay: {hide: 200},
 
         trigger: 'focus',
     }).on('shown.bs.popover', function () {
@@ -480,26 +483,25 @@ function addReactionButtonToChatMessages() {
 
         const roomId = splitBaseUri[0].split('-').slice(-1)
 
-        const detachMsgId =$(this).attr('data-hash').replaceAll('hehe','')
+        const detachMsgId = $(this).attr('data-hash').replaceAll('hehe', '')
         const childEl = document.querySelectorAll('div.list-item-emoji.mtien-ext > ul > li')
-        childEl.forEach(item =>{
-            item.addEventListener('click',()=>{
+        const user = JSON.parse(localStorage.getItem('user'))
 
+        childEl.forEach(item => {
+            item.addEventListener('click', () => {
 
-                const user = JSON.parse(localStorage.getItem('user'))
-                console.log(user)
-                if (user.token){
-                    console.log('123')
+                if (user.token) {
                     $.ajax({
                         type: 'POST',
                         url: 'https://laka.lampart-vn.com:9443/api/v1/message/set-reaction',
                         data: {
                             'room_id': roomId[0],
                             'message_id': detachMsgId,
-                            'message_user':$(this).attr('uid'),
-                            'icon_id': item.getAttribute('id').replace('emoji-','')
+                            'message_user': $(this).attr('uid'),
+                            'icon_id': item.getAttribute('id').replace('emoji-', '')
                         },
-                        headers: { "Authorization": `Bearer ${user.token}`,
+                        headers: {
+                            "Authorization": `Bearer ${user.token}`,
                             'Access-Control-Allow-Origin': '*',
                             'Access-Control-Allow-Headers': 'Origin,X-Requested-With',
                             'Accept': 'application/json',
@@ -516,6 +518,7 @@ function addReactionButtonToChatMessages() {
     });
 
 }
+
 window.addEventListener('load', () => {
     setTimeout(addReactionButtonToChatMessages, 2500)
 });
