@@ -474,7 +474,7 @@ const fullEmojiElement = `<div class="list-item-emoji mtien-ext"><ul>${emojiItem
 function addReactionButtonToChatMessages() {
     const divMsgItemMention = document.querySelectorAll(".chat-element-message>.message-item");
     divMsgItemMention.forEach((message, index) => {
-        console.log('123')
+        console.log(message)
         const divMsgContent = message.querySelector('.msg-main-content')
 
         let userMsg = divMsgContent.getAttribute('data-uid')
@@ -552,18 +552,19 @@ window.addEventListener('load', () => {
         mutations.forEach(mutation=>{
 
             if (mutation.type==='childList'){   
-                const { attributeName, oldValue, target } = mutation;
-                console.log(mutation.addedNodes,mutation)
+                console.log(mutation)
+                console.log(mutation.target)
                 // addReactionButtonToChatMessages()
             }
         })
     })
     observer.observe(msgListEle, {
-        // attributeFilter: ["title"],
-        // attributeOldValue: true,
-        // characterDataOldValue: true,
+
         childList: true,
-        // subtree: true,
+
     });
     // setTimeout(addReactionButtonToChatMessages, 2500)
 });
+// subtree: true,  // attributeFilter: ["title"],
+//         // attributeOldValue: true,
+//         // characterDataOldValue: true,
