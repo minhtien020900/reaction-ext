@@ -454,12 +454,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         // console.log(currentURL.split('/'))
         // console.log("URL hiện tại là: " + currentURL);
 
-        document.querySelectorAll('.mtien').forEach((item) => item.remove())
-        $('.mtien').popover('dispose')
+        // document.querySelectorAll('.mtien').forEach((item) => item.remove())
+        // $('.mtien').popover('dispose')
+        rmBtnReact()
         setTimeout(addReactionButtonToChatMessages, 2500)
     }
 });
 
+const rmBtnReact = ()=>{
+    document.querySelectorAll('.mtien').forEach((item) => item.remove())
+    $('.mtien').popover('dispose')
+
+}
 
 let emojiItems = ''
 
@@ -471,32 +477,27 @@ EMOJIS.forEach((emoji) => {
 })
 const fullEmojiElement = `<div class="list-item-emoji mtien-ext"><ul>${emojiItems}</ul></div>`
 
-function addReactionButtonToChatMessages() {
-    const divMsgItemMention = document.querySelectorAll(".chat-element-message>.message-item");
-    divMsgItemMention.forEach((message, index) => {
-        console.log(message)
-        const divMsgContent = message.querySelector('.msg-main-content')
+const createBtnReact = (message)=>{
+    const divMsgContent = message.querySelector('.msg-main-content')
 
-        let userMsg = divMsgContent.getAttribute('data-uid')
-        let msgId = message.getAttribute('id').split('-').slice(-1)
+    let userMsg = divMsgContent.getAttribute('data-uid')
+    let msgId = message.getAttribute('id').split('-').slice(-1)
 
-        const btnReactExtension = document.createElement('button');
-        btnReactExtension.classList.add('btn', 'btn-custom', 'btn-success', 'mtien', 'position-absolute')
-        btnReactExtension.style.bottom = '5px'
-        btnReactExtension.style.right = '5px'
-        btnReactExtension.setAttribute('data-popover', `nyi-${index}`)
-        btnReactExtension.setAttribute('id', `thichngamtrang-${msgId}`)
-        btnReactExtension.setAttribute('data-hash', `hehe${msgId}hehe`)
-        btnReactExtension.setAttribute('data-toggle', "popover-mtien")
-        btnReactExtension.setAttribute('uid', userMsg)
+    const btnReactExtension = document.createElement('button');
+    btnReactExtension.classList.add('btn', 'btn-custom', 'btn-success', 'mtien', 'position-absolute')
+    btnReactExtension.style.bottom = '5px'
+    btnReactExtension.style.right = '5px'
+    btnReactExtension.setAttribute('id', `thichngamtrang-${msgId}`)
+    btnReactExtension.setAttribute('data-hash', `hehe${msgId}hehe`)
+    btnReactExtension.setAttribute('data-toggle', "popover-mtien")
+    btnReactExtension.setAttribute('uid', userMsg)
 
-        btnReactExtension.innerHTML = HTML_BTN_REACTION;
-        message.appendChild(btnReactExtension);
-
-    });
+    btnReactExtension.innerHTML = HTML_BTN_REACTION;
 
 
-    // const btnHavePopover = document.querySelectorAll('.mtien');
+    message.appendChild(btnReactExtension);
+}
+const createPopover = ()=>{
     $('.mtien').popover({
         content: fullEmojiElement,
         html: true,
@@ -514,7 +515,6 @@ function addReactionButtonToChatMessages() {
 
         childEl.forEach(item => {
             item.addEventListener('click', () => {
-
                 if (user.token) {
                     $.ajax({
                         type: 'POST',
@@ -536,35 +536,55 @@ function addReactionButtonToChatMessages() {
 
                     });
                 }
-
             })
         })
 
     });
+}
+function addReactionButtonToChatMessages() {
+    const divMsgItemMention = document.querySelectorAll(".chat-element-message>.message-item");
+    divMsgItemMention.forEach((message) => {
+        createBtnReact(message)
+
+    });
+    createPopover()
 
 }
 
 window.addEventListener('load', () => {
-
     const msgListEle = document.getElementById('message-list')
+    const loadingEle = document.querySelector('.loading-icon')
 
-    const observer = new MutationObserver((mutations, observer)=>{
-        mutations.forEach(mutation=>{
-
-            if (mutation.type==='childList'){   
-                console.log(mutation)
-                console.log(mutation.target)
-                // addReactionButtonToChatMessages()
+    const obLoadingEle = new MutationObserver((mutations)=>{
+        mutations.forEach(mutation =>{
+            if (mutation.target.style.display === 'none'){
+                rmBtnReact()
+                addReactionButtonToChatMessages()
             }
         })
     })
-    observer.observe(msgListEle, {
 
+    const observer = new MutationObserver((mutations, observer)=>{
+        const childElements = mutations[0].target.children
+
+
+        for (const childElement of childElements) {
+            const messageItem = childElement.querySelector('.message-item')
+            const btnReact = childElement.querySelector('.mtien')
+            if (!btnReact){
+                createBtnReact(messageItem)
+                createPopover()
+            }
+        }
+
+    })
+    obLoadingEle.observe(loadingEle,{
+        attributes:true,
+        attributeFilter:['style'],
+    })
+    observer.observe(msgListEle, {
         childList: true,
 
     });
     // setTimeout(addReactionButtonToChatMessages, 2500)
 });
-// subtree: true,  // attributeFilter: ["title"],
-//         // attributeOldValue: true,
-//         // characterDataOldValue: true,
