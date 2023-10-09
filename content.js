@@ -456,7 +456,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         // document.querySelectorAll('.mtien').forEach((item) => item.remove())
         // $('.mtien').popover('dispose')
-        rmBtnReact()
         setTimeout(addReactionButtonToChatMessages, 2500)
     }
 });
@@ -542,6 +541,8 @@ const createPopover = ()=>{
     });
 }
 function addReactionButtonToChatMessages() {
+    rmBtnReact()
+
     const divMsgItemMention = document.querySelectorAll(".chat-element-message>.message-item");
     divMsgItemMention.forEach((message) => {
         createBtnReact(message)
@@ -552,39 +553,44 @@ function addReactionButtonToChatMessages() {
 }
 
 window.addEventListener('load', () => {
+
+    setTimeout(addReactionButtonToChatMessages, 2500)
+
+
     const msgListEle = document.getElementById('message-list')
     const loadingEle = document.querySelector('.loading-icon')
+    const chatElMessage  = document.querySelector('.chat-element-message')
 
     const obLoadingEle = new MutationObserver((mutations)=>{
         mutations.forEach(mutation =>{
             if (mutation.target.style.display === 'none'){
-                rmBtnReact()
                 addReactionButtonToChatMessages()
             }
         })
     })
 
     const observer = new MutationObserver((mutations, observer)=>{
-        const childElements = mutations[0].target.children
-
-
-        for (const childElement of childElements) {
-            const messageItem = childElement.querySelector('.message-item')
-            const btnReact = childElement.querySelector('.mtien')
-            if (!btnReact){
-                createBtnReact(messageItem)
-                createPopover()
-            }
-        }
-
+        mutations.forEach(mutation =>{
+            addReactionButtonToChatMessages()
+        })
     })
+    // const obChatElMessage = new MutationObserver((mutations)=>{
+    //     mutations.forEach(mutation =>{
+    //         if (mutation.target.style.display === 'none'){
+    //             addReactionButtonToChatMessages()
+    //         }
+    //     })
+    // })
     obLoadingEle.observe(loadingEle,{
         attributes:true,
         attributeFilter:['style'],
     })
+    // obChatElMessage.observe(chatElMessage,{
+    //     attributes:true,
+    //     attributeFilter:['id'],
+    // })
     observer.observe(msgListEle, {
         childList: true,
 
     });
-    // setTimeout(addReactionButtonToChatMessages, 2500)
 });
