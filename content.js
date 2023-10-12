@@ -1,4 +1,3 @@
-// import {EMOJIS, HTML_BTN_REACTION} from "./constant/emoji";
 const HTML_BTN_REACTION =
     `<span
         id="nav-icon-emoji-smile" class="laka-icon text-dark"><svg viewBox="0 0 16 16" width="1em" height="1em"
@@ -460,7 +459,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 });
 
-const rmBtnReact = ()=>{
+const rmBtnReact = () => {
     document.querySelectorAll('.mtien').forEach((item) => item.remove())
     $('.mtien').popover('dispose')
 
@@ -469,14 +468,14 @@ const rmBtnReact = ()=>{
 let emojiItems = ''
 
 EMOJIS.forEach((emoji) => {
-    if (emoji.showInList){
+    if (emoji.showInList) {
         emojiItems += `<li id="emoji-${emoji.id}" ><img alt="${emoji.name}" src="${emoji.src}" class="ui_emoticon"></li>`
 
     }
 })
 const fullEmojiElement = `<div class="list-item-emoji mtien-ext"><ul>${emojiItems}</ul></div>`
 
-const createBtnReact = (message)=>{
+const createBtnReact = (message) => {
     const divMsgContent = message.querySelector('.msg-main-content')
 
     let userMsg = divMsgContent.getAttribute('data-uid')
@@ -493,10 +492,9 @@ const createBtnReact = (message)=>{
 
     btnReactExtension.innerHTML = HTML_BTN_REACTION;
 
-
     message.appendChild(btnReactExtension);
 }
-const createPopover = ()=>{
+const createPopover = () => {
     $('.mtien').popover({
         content: fullEmojiElement,
         html: true,
@@ -540,6 +538,7 @@ const createPopover = ()=>{
 
     });
 }
+
 function addReactionButtonToChatMessages() {
     rmBtnReact()
 
@@ -553,42 +552,29 @@ function addReactionButtonToChatMessages() {
 }
 
 window.addEventListener('load', () => {
-
     setTimeout(addReactionButtonToChatMessages, 2500)
-
-
     const msgListEle = document.getElementById('message-list')
     const loadingEle = document.querySelector('.loading-icon')
-    const chatElMessage  = document.querySelector('.chat-element-message')
 
-    const obLoadingEle = new MutationObserver((mutations)=>{
-        mutations.forEach(mutation =>{
-            if (mutation.target.style.display === 'none'){
+    const obLoadingEle = new MutationObserver((mutations) => {
+        mutations.forEach(mutation => {
+            if (mutation.target.style.display === 'none') {
                 addReactionButtonToChatMessages()
             }
         })
     })
 
-    const observer = new MutationObserver((mutations, observer)=>{
-        mutations.forEach(mutation =>{
+    const observer = new MutationObserver((mutations, observer) => {
+        mutations.forEach(mutation => {
             addReactionButtonToChatMessages()
         })
     })
-    // const obChatElMessage = new MutationObserver((mutations)=>{
-    //     mutations.forEach(mutation =>{
-    //         if (mutation.target.style.display === 'none'){
-    //             addReactionButtonToChatMessages()
-    //         }
-    //     })
-    // })
-    obLoadingEle.observe(loadingEle,{
-        attributes:true,
-        attributeFilter:['style'],
+
+    obLoadingEle.observe(loadingEle, {
+        attributes: true,
+        attributeFilter: ['style'],
     })
-    // obChatElMessage.observe(chatElMessage,{
-    //     attributes:true,
-    //     attributeFilter:['id'],
-    // })
+
     observer.observe(msgListEle, {
         childList: true,
 
