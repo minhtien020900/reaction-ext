@@ -6,33 +6,56 @@
  -->
 <html>
 <head>
-    <title>Getting Started Extension's Popup</title>
+    <script src="plugin/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+    <link rel="stylesheet" href="css/popup.css">
+    <title>hehe</title>
 
-    <!--
-      - JavaScript and HTML must be in separate files: see our Content Security
-      - Policy documentation[1] for details and explanation.
-      -
-      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
-     -->
-    <script src="jquery-3.7.1.min.js"></script>
-    <link rel="stylesheet" href="bootstrap.min.css">
     <style>
-        .text-center img{
-            height: 50px;
-            
-        }
+
     </style>
 </head>
 <body>
-<!--<div id="popoverContainer" style="width: 500px;height: 200px" >-->
-<div class="text-center">
-    <img src="./images/sj.png" class="rounded-circle" alt="@sj">
+
+<div class="container">
+
+    <ul class="row list-group list-group-flush list-group-item-action">
+        <li class="col-12 list-group-item">
+            <a href="#" type="button" class="btn btn-sm btn-success w-100" id="btn-refresh-reaction">
+<!--                <i class="fas fa-redo mr-2" style="color: #5e892a;"></i>-->
+
+                Refresh</a>
+
+        </li>
+<!--        <li class="col-12 list-group-item">-->
+<!--            <a type="button" class="btn btn-sm btn-light w-100">-->
+<!--                <i class="fas fa-redo" style="color: #5e892a;"></i>Reload</a>-->
+
+<!--        </li>-->
+<!--        <li class="col-12 list-group-item">-->
+<!--            <a type="button" class="btn btn-sm btn-light w-100">-->
+<!--                <i class="fas fa-redo" style="color: #5e892a;"></i>Reload</a>-->
+
+<!--        </li>-->
+<!--        <li class="col-12 list-group-item">-->
+<!--            <a type="button" class="btn btn-sm btn-light w-100">-->
+<!--                <i class="fas fa-redo" style="color: #5e892a;"></i>Reload</a>-->
+
+<!--        </li>-->
+<!--        <li class="col-12 list-group-item">-->
+<!--            <a type="button" class="btn btn-sm btn-light w-100">-->
+<!--                <i class="fas fa-redo" style="color: #5e892a;"></i>Reload</a>-->
+
+<!--        </li>-->
+    </ul>
+
 </div>
-<!--</div>-->
 
 <script src="popup.js"></script>
-<script src="bootstrap.bundle.js"></script>
+<script src="plugin/bootstrap.bundle.js"></script>
 
 </body>
 </html>

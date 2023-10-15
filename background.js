@@ -1,9 +1,12 @@
-chrome.tabs.onUpdated.addListener( function
+import {EMOJIS,HTML_BTN_REACTION} from "./constant/emoji.js";
+
+chrome.tabs.onUpdated.addListener(function
         (tabId, changeInfo, tab) {
-        // read changeInfo data and do something with it (like read the url)
         if (changeInfo.url) {
-            // do something here
-            chrome.tabs.sendMessage(tabId, { url: changeInfo.url });
+            console.log(EMOJIS)
+            const message = {action: 'change-room', data: changeInfo.url}
+            chrome.tabs.sendMessage(tabId, message);
         }
     }
 );
+

@@ -4,7 +4,8 @@
   "version": "1.0",
   "manifest_version": 3,
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "permissions": [
     "webNavigation",
@@ -23,7 +24,7 @@
         "<all_urls>"
       ],
       "js": [
-        "jquery-3.7.1.min.js","bootstrap.bundle.js", "content.js"
+        "plugin/jquery-3.7.1.min.js","plugin/bootstrap.bundle.js", "content.js"
 
       ]
     }
