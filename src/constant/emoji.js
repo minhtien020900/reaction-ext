@@ -879,6 +879,6 @@ export const EMOJIS = [
         src: '/static/emojis/default/emo_hihi.gif',
         code: '=))',
         altCode: '=))',
-        showInList: true,
+        showInList: false,
     },
 ]

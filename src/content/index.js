@@ -1,8 +1,7 @@
-import browser from "webextension-polyfill";
 import {EMOJIS, HTML_BTN_REACTION} from "../constant/emoji.js";
-import {BASE_API_URL_DEV, BASE_API_URL_PROD} from "../constant/api.js";
+import {BASE_API_URL_DEV, BASE_API_URL_PROD, DOMAIN_PROD} from "../constant/api.js";
 
-browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.url) {
         // const currentURL = message.url;
         // Sử dụng currentURL ở đây
@@ -60,10 +59,11 @@ const createPopover = () => {
         trigger: 'focus',
     }).on('shown.bs.popover', function () {
         const splitBaseUri = $(this)[0].baseURI.split('/').slice(-1)
-        const endpoint = splitBaseUri === BASE_API_URL_PROD ? BASE_API_URL_PROD : BASE_API_URL_DEV
+        // const endpoint = splitBaseUri === DOMAIN_PROD ? BASE_API_URL_PROD : BASE_API_URL_DEV
         const roomId = splitBaseUri[0].split('-').slice(-1)
 
         const detachMsgId = $(this).attr('data-hash').replaceAll('hehe', '')
+        console.log(detachMsgId)
         const childEl = document.querySelectorAll('div.list-item-emoji.mtien-ext > ul > li')
         const user = JSON.parse(localStorage.getItem('user'))
 
@@ -72,7 +72,7 @@ const createPopover = () => {
                 if (user.token) {
                     $.ajax({
                         type: 'POST',
-                        url: endpoint,
+                        url: BASE_API_URL_PROD,
                         data: {
                             'room_id': roomId[0],
                             'message_id': detachMsgId,
