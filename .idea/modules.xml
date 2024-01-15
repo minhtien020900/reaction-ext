@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/reaction-laka.iml" filepath="$PROJECT_DIR$/.idea/reaction-laka.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/reaction-ext.iml" filepath="$PROJECT_DIR$/.idea/reaction-ext.iml" />
     </modules>
   </component>
 </project>
