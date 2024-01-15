@@ -1,5 +1,6 @@
 import {EMOJIS, HTML_BTN_REACTION} from "../constant/emoji.js";
 import {BASE_API_URL_DEV, BASE_API_URL_PROD, DOMAIN_PROD} from "../constant/api.js";
+import browser from "webextension-polyfill";
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.url) {

@@ -14,15 +14,28 @@
   "{{firefox}}.browser_action": {
     "default_popup": "src/popup.html"
   },
-
   "background": {
     "{{chrome}}.service_worker": "src/background/index.js",
     "{{firefox}}.scripts": [
       "src/background/index.js"
     ]
   },
-  "content_scripts": [{
-    "matches": ["*://*/*"],
-    "js": ["src/content/index.js","src/plugin/jquery-3.7.1.min.js","src/plugin/bootstrap.bundle.js"]
-  }]
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*/*"
+      ],
+      "js": [
+        "src/content/index.js",
+        "src/plugin/jquery-3.7.1.min.js",
+        "src/plugin/bootstrap.bundle.js"
+      ]
+    }
+  ],
+  "permissions": [
+    "webNavigation",
+    "storage",
+    "tabs",
+    "activeTab"
+  ]
 }
