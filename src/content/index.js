@@ -1,8 +1,42 @@
 import {EMOJIS, HTML_BTN_REACTION} from "../constant/emoji.js";
 import {BASE_API_URL_DEV, BASE_API_URL_PROD, DOMAIN_PROD} from "../constant/api.js";
-import browser from "webextension-polyfill";
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+function setNotificationCallback(callback) {
+
+    const OldNotify = window.Notification;
+
+    const newNotify =function (title, opt) {
+        callback(title, opt);
+        return new OldNotify(title, opt);
+    };
+    newNotify.requestPermission = OldNotify.requestPermission.bind(OldNotify);
+    Object.defineProperty(newNotify, 'permission', {
+        get:  function() {
+            return OldNotify.permission;
+        }
+    });
+    console.log(newNotify('s',{
+        body:'hic',
+    }));
+    window.Notification = newNotify;
+}
+function notifyCallback(title, opt) {
+    opt.body ='hihisss'
+
+    console.log("title", title); // this never gets called
+}
+
+setNotificationCallback(notifyCallback)
+
+
+// Notification.requestPermission(function (permission) {
+//     if (permission === "granted") {
+//         setNotificationCallback(notifyCallback)
+//
+//         // const notif = new Notification('My title');
+//     }
+// });
+chrome.runtime.onMessage.addListener((message, sender, sendResponssse) => {
     if (message.url) {
         // const currentURL = message.url;
         // Sử dụng currentURL ở đây
@@ -110,6 +144,7 @@ function addReactionButtonToChatMessages() {
 }
 
 window.addEventListener('load', () => {
+
     setTimeout(addReactionButtonToChatMessages, 2500)
     const msgListEle = document.getElementById('message-list')
     const loadingEle = document.querySelector('.loading-icon')

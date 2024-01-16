@@ -36,6 +36,7 @@
     "webNavigation",
     "storage",
     "tabs",
-    "activeTab"
+    "activeTab",
+    "notifications"
   ]
 }
