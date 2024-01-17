@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () =>{
 
 });
 
-(function () {
+setTimeout (function () {
     console.log(2);
 
     function notifyCallback(title, opt) {
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () =>{
     });
 
     window.Notification = newNotify;
-})();
+},3000);
 // (function () {
 //     console.log('ssdjaosd')
 //     function notifyCallback(title, opt) {
