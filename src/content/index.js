@@ -1,41 +1,60 @@
 import {EMOJIS, HTML_BTN_REACTION} from "../constant/emoji.js";
 import {BASE_API_URL_DEV, BASE_API_URL_PROD, DOMAIN_PROD} from "../constant/api.js";
 
-function setNotificationCallback(callback) {
+console.log(Notification.permission);
+document.addEventListener('DOMContentLoaded', () =>{
+    console.log(1);
+
+});
+
+(function () {
+    console.log(2);
+
+    function notifyCallback(title, opt) {
+        console.log("title", title);
+    }
 
     const OldNotify = window.Notification;
 
-    const newNotify =function (title, opt) {
-        callback(title, opt);
+    function newNotify(title, opt) {
+        notifyCallback(title, opt);
         return new OldNotify(title, opt);
-    };
+    }
+
     newNotify.requestPermission = OldNotify.requestPermission.bind(OldNotify);
     Object.defineProperty(newNotify, 'permission', {
-        get:  function() {
+        get: function() {
             return OldNotify.permission;
         }
     });
-    console.log(newNotify('s',{
-        body:'hic',
-    }));
+
     window.Notification = newNotify;
-}
-function notifyCallback(title, opt) {
-    opt.body ='hihisss'
-
-    console.log("title", title); // this never gets called
-}
-
-setNotificationCallback(notifyCallback)
-
+})();
+// (function () {
+//     console.log('ssdjaosd')
+//     function notifyCallback(title, opt) {
+//         console.log("title", title);
+//     }
+//
+//     const handler = {
+//         construct(target, args) {
+//             notifyCallback(...args);
+//             return new target(...args);
+//         }
+//     };
+//
+//     const ProxifiedNotification = new Proxy(Notification, handler);
+//
+//     window.Notification = ProxifiedNotification;
+// })();
 
 // Notification.requestPermission(function (permission) {
 //     if (permission === "granted") {
-//         setNotificationCallback(notifyCallback)
 //
-//         // const notif = new Notification('My title');
+//         const notif = new Notification('My title');
 //     }
 // });
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponssse) => {
     if (message.url) {
         // const currentURL = message.url;
@@ -144,7 +163,7 @@ function addReactionButtonToChatMessages() {
 }
 
 window.addEventListener('load', () => {
-
+    console.log(3)
     setTimeout(addReactionButtonToChatMessages, 2500)
     const msgListEle = document.getElementById('message-list')
     const loadingEle = document.querySelector('.loading-icon')
@@ -173,3 +192,4 @@ window.addEventListener('load', () => {
 
     });
 });
+
