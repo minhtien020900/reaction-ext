@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import webExtension, { readJsonFile } from "vite-plugin-web-extension";
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 function generateManifest() {
   const manifest = readJsonFile("src/manifest.json");
@@ -21,5 +22,24 @@ export default defineConfig({
       manifest: generateManifest,
       watchFilePaths: ["package.json", "manifest.json"],
     }),
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'src/notifyhook.js',
+          dest: 'src/intercept-notify'
+        }
+      ]
+    })
   ],
+  build:{
+    rollupOptions:{
+      // input:{
+      //   'src/notifyhook':'src/notifyhook.js'
+      // },
+
+
+    },
+
+  },
+
 });

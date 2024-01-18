@@ -1,78 +1,10 @@
 import {EMOJIS, HTML_BTN_REACTION} from "../constant/emoji.js";
-import {BASE_API_URL_DEV, BASE_API_URL_PROD, DOMAIN_PROD} from "../constant/api.js";
+import { BASE_API_URL_PROD} from "../constant/api.js";
 
+const s = document.createElement("script");
+s.src = chrome.runtime.getURL("src/intercept-notify/notifyhook.js");
+document.body.appendChild(s);
 
-let my_tabid = null
-async function getCurrentTab() {
-    let queryOptions = { active: true, lastFocusedWindow: true };
-    // `tab` will either be a `tabs.Tab` instance or `undefined`.
-    let [tab] = await chrome.tabs.query(queryOptions);
-    return tab;
-}
-
-
-
-let [tab] = await  getCurrentTab()
-console.log(tab)
-function changeBackgroundColor() {
-    console.log(tab,'hihi')
-    document.body.style.backgroundColor = 'red';
-}
-chrome.scripting
-    .executeScript({
-        target : {tabId : tab},
-        func : changeBackgroundColor,
-    })
-    .then(() => console.log("injected a function"));
-
-
-(function () {
-
-    function notifyCallback(title, opt) {
-        console.log("title", title);
-    }
-
-    const OldNotify = window.Notification;
-
-    function newNotify(title, opt) {
-        notifyCallback(title, opt);
-        return new OldNotify(title, opt);
-    }
-
-    newNotify.requestPermission = OldNotify.requestPermission.bind(OldNotify);
-    Object.defineProperty(newNotify, 'permission', {
-        get: function() {
-            return OldNotify.permission;
-        }
-    });
-
-    window.Notification = newNotify;
-})();
-// (function () {
-//     console.log('ssdjaosd')
-
-//     function notifyCallback(title, opt) {
-//         console.log("title", title);
-//     }
-//
-//     const handler = {
-//         construct(target, args) {
-//             notifyCallback(...args);
-//             return new target(...args);
-//         }
-//     };
-//
-//     const ProxifiedNotification = new Proxy(Notification, handler);
-//
-//     window.Notification = ProxifiedNotification;
-// })();
-
-// Notification.requestPermission(function (permission) {
-//     if (permission === "granted") {
-//
-//         const notif = new Notification('My title');
-//     }
-// });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponssse) => {
     if (message.url) {
@@ -182,7 +114,6 @@ function addReactionButtonToChatMessages() {
 }
 
 window.addEventListener('load', () => {
-    console.log(3)
     setTimeout(addReactionButtonToChatMessages, 2500)
     const msgListEle = document.getElementById('message-list')
     const loadingEle = document.querySelector('.loading-icon')

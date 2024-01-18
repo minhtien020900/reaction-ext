@@ -8,6 +8,7 @@
     "build": "vite build"
   },
   "dependencies": {
+    "vite-plugin-static-copy": "^1.0.0",
     "vue": "^3.3"
   },
   "devDependencies": {

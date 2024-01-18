@@ -17,3 +17,4 @@ chrome.tabs.onUpdated.addListener(function
         }
     }
 );
+

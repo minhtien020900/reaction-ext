@@ -29,7 +29,8 @@
         "src/content/index.js",
         "src/plugin/jquery-3.7.1.min.js",
         "src/plugin/bootstrap.bundle.js"
-      ]
+      ],
+      "run_at": "document_end"
     }
   ],
   "permissions": [
@@ -40,5 +41,11 @@
     "notifications",
     "scripting"
 
-  ]
+  ],
+  "web_accessible_resources": [{
+    "resources": ["src/intercept-notify/notifyhook.js"],
+    "matches": ["<all_urls>"],
+    "use_dynamic_url": true,
+    "extension_ids": []
+  }]
 }
