@@ -8,8 +8,10 @@
     "build": "vite build"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "vite-plugin-static-copy": "^1.0.0",
-    "vue": "^3.3"
+    "vue": "^3.3",
+    "vuetify": "^3.4.10"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.5.0",
