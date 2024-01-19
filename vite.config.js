@@ -25,21 +25,26 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
-          src: 'src/notifyhook.js',
+          src: 'src/inject-intercept-notify.js',
           dest: 'src/intercept-notify'
-        }
+        },
+        // {
+        //   src: 'src/rm-intercept-notify.js',
+        //   dest: 'src/intercept-notify'
+        // },
       ]
     })
   ],
   build:{
     rollupOptions:{
       // input:{
-      //   'src/notifyhook':'src/notifyhook.js'
+      //   'src/notifyhook':'src/inject-intercept-notify.js'
       // },
 
 
     },
-
+    commonjsOptions:{exclude:'src/plugin/*.js'
+    }
   },
 
 });

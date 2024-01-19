@@ -1,22 +1,38 @@
 import {EMOJIS, HTML_BTN_REACTION} from "../constant/emoji.js";
-import { BASE_API_URL_PROD} from "../constant/api.js";
+import {BASE_API_URL_PROD} from "../constant/api.js";
 
-const s = document.createElement("script");
-s.src = chrome.runtime.getURL("src/intercept-notify/notifyhook.js");
-document.body.appendChild(s);
 
+function injectScriptInterceptNotify() {
+
+    const s = document.createElement("script");
+    s.id = 'inject-intercept-notify'
+    s.src = chrome.runtime.getURL("src/intercept-notify/inject-intercept-notify.js");
+
+    document.body.appendChild(s);
+}
+function rmScriptInterceptNotify() {
+    const scriptTag = document.getElementById('inject-intercept-notify')
+    if (scriptTag) scriptTag.remove()
+
+    const s = document.createElement("script");
+    s.id = 'remove-intercept-notify'
+    s.src = chrome.runtime.getURL("src/intercept-notify/rm-intercept-notify.js");
+    console.log(s)
+
+    document.body.appendChild(s);
+}
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponssse) => {
-    if (message.url) {
-        // const currentURL = message.url;
-        // Sử dụng currentURL ở đây
-        // console.log(currentURL.split('/'))
-        // console.log("URL hiện tại là: " + currentURL);
 
-        // document.querySelectorAll('.mtien').forEach((item) => item.remove())
-        // $('.mtien').popover('dispose')
+    if (message.url) {
         setTimeout(addReactionButtonToChatMessages, 2500)
     }
+    if (message.action === 'intercept-notify') {
+        localStorage.setItem('hidden-msg-incoming',message.value)
+        location.reload()
+
+        }
+
 });
 
 const rmBtnReact = () => {
@@ -112,8 +128,20 @@ function addReactionButtonToChatMessages() {
     createPopover()
 
 }
-
 window.addEventListener('load', () => {
+
+    // chrome.runtime.sendMessage({action:'getLocalStorage',key:'hidden-msg-incoming'},function (response) {
+    //     // Xử lý dữ liệu nhận được từ localStorage
+    //     console.log('Data from localStorage in content script:', response.data);
+    // })
+
+    const hiddenState = localStorage.getItem('hidden-msg-incoming')
+    if (hiddenState==='1')
+    {
+        injectScriptInterceptNotify()
+    }
+
+
     setTimeout(addReactionButtonToChatMessages, 2500)
     const msgListEle = document.getElementById('message-list')
     const loadingEle = document.querySelector('.loading-icon')

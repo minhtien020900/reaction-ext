@@ -43,8 +43,8 @@
 
   ],
   "web_accessible_resources": [{
-    "resources": ["src/intercept-notify/notifyhook.js"],
-    "matches": ["<all_urls>"],
+    "resources": ["src/intercept-notify/inject-intercept-notify.js"],
+    "matches": ["https://laka.lampart-vn.com/*"],
     "use_dynamic_url": true,
     "extension_ids": []
   }]

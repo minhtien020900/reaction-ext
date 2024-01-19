@@ -17,4 +17,9 @@ chrome.tabs.onUpdated.addListener(function
         }
     }
 );
-
+chrome.runtime.onMessage.addListener(function (request,sender,sendResponse){
+    if (request.action === 'getLocalStorage') {
+        // Gửi dữ liệu từ localStorage về content script
+        sendResponse({ data: localStorage[request.key] });
+    }
+})
