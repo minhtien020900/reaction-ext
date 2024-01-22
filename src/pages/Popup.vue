@@ -1,18 +1,21 @@
 <script setup>
 import {onMounted, ref} from "vue";
+import {ACTION, regex} from "../constant/const.js";
 
 const items = ref([
-  {text: 'Hide message', icon: 'mdi-eye-off'},
+  {text: 'Ẩn tin nhắn đến', icon: 'mdi-eye-off'},
 
 ])
-// const domain = /^https:\/\/laka\.lampart-vn\.com/;
 
 const isHideMsgIncoming = ref(false)
 const setHiddenMsgState = (state) => {
   localStorage.setItem('hidden-msg-incoming', state)
   chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
     const tabActive = tabs[0]
-    chrome.tabs.sendMessage(tabActive.id, {action: 'intercept-notify', value: state})
+    if (tabActive.url.match(regex) &&tabActive.status==='complete'){
+      chrome.tabs.sendMessage(tabActive.id, {action:ACTION.INTERCEPT_NOTIFY, value: state})
+
+    }
   })
 }
 const onUpdate = (value) => {

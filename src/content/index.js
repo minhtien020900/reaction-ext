@@ -1,5 +1,5 @@
 import {EMOJIS, HTML_BTN_REACTION} from "../constant/emoji.js";
-import {BASE_API_URL_PROD} from "../constant/api.js";
+import {ACTION, BASE_API_URL_PROD} from "../constant/const.js";
 
 
 function injectScriptInterceptNotify() {
@@ -10,6 +10,7 @@ function injectScriptInterceptNotify() {
 
     document.body.appendChild(s);
 }
+
 function rmScriptInterceptNotify() {
     const scriptTag = document.getElementById('inject-intercept-notify')
     if (scriptTag) scriptTag.remove()
@@ -22,18 +23,7 @@ function rmScriptInterceptNotify() {
     document.body.appendChild(s);
 }
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponssse) => {
 
-    if (message.url) {
-        setTimeout(addReactionButtonToChatMessages, 2500)
-    }
-    if (message.action === 'intercept-notify') {
-        localStorage.setItem('hidden-msg-incoming',message.value)
-        location.reload()
-
-        }
-
-});
 
 const rmBtnReact = () => {
     document.querySelectorAll('.mtien').forEach((item) => item.remove())
@@ -84,7 +74,6 @@ const createPopover = () => {
         const roomId = splitBaseUri[0].split('-').slice(-1)
 
         const detachMsgId = $(this).attr('data-hash').replaceAll('hehe', '')
-        console.log(detachMsgId)
         const childEl = document.querySelectorAll('div.list-item-emoji.mtien-ext > ul > li')
         const user = JSON.parse(localStorage.getItem('user'))
 
@@ -128,24 +117,39 @@ function addReactionButtonToChatMessages() {
     createPopover()
 
 }
+// document.addEventListener('DOMContentLoaded',function () {
+
+    chrome.runtime.onMessage.addListener((message, sender, sendResponssse) => {
+        switch (message.action) {
+            case ACTION.CHANGE_TAB:
+                console.log('change tab ih')
+                setTimeout(addReactionButtonToChatMessages, 2500)
+                break;
+            case ACTION.INTERCEPT_NOTIFY:
+                localStorage.setItem('hidden-msg-incoming', message.value)
+                location.reload()
+                break;
+        }
+    });
+
+// })
 window.addEventListener('load', () => {
 
-    // chrome.runtime.sendMessage({action:'getLocalStorage',key:'hidden-msg-incoming'},function (response) {
-    //     // Xử lý dữ liệu nhận được từ localStorage
-    //     console.log('Data from localStorage in content script:', response.data);
-    // })
+    // Thông báo rằng content script đã load xong
+    // chrome.runtime.sendMessage({message: "ContentScriptLoaded"});
+
+
 
     const hiddenState = localStorage.getItem('hidden-msg-incoming')
-    if (hiddenState==='1')
-    {
+    if (hiddenState === '1') {
         injectScriptInterceptNotify()
     }
-
 
     setTimeout(addReactionButtonToChatMessages, 2500)
     const msgListEle = document.getElementById('message-list')
     const loadingEle = document.querySelector('.loading-icon')
 
+    if (!msgListEle || !loadingEle) return
     const obLoadingEle = new MutationObserver((mutations) => {
         mutations.forEach(mutation => {
             if (mutation.target.style.display === 'none') {
@@ -160,6 +164,7 @@ window.addEventListener('load', () => {
         })
     })
 
+
     obLoadingEle.observe(loadingEle, {
         attributes: true,
         attributeFilter: ['style'],
@@ -167,7 +172,6 @@ window.addEventListener('load', () => {
 
     observer.observe(msgListEle, {
         childList: true,
-
     });
 });
 
